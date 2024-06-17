@@ -12,7 +12,7 @@ mysql -u root
 
 To create a sample database, run:
 
-~~~~sql
+```sql
 CREATE DATABASE databaseName;
 SHOW DATABASES; -- you should see your new database under this list
 
@@ -25,16 +25,16 @@ CREATE TABLE tableName
 
 SHOW TABLES; -- you should see your new table under this list
 DESCRIBE tableName; -- you should see the new columns and their details
-~~~~
+```
 
 To populate the database, run:
 
-~~~~sql
+```sql
 INSERT INTO tableName ( columnName, ... ) VALUES
   ( columnValue, ... ),
     ...
 SELECT * FROM tableName; -- you should see all your new values inserted into the table
-~~~~
+```
 
 ## Starting Up the Web Application
 
