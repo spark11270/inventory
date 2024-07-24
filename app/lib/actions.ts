@@ -16,6 +16,15 @@ export type State = {
   message?: string | null;
 };
 
+export type ProductState = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string({
@@ -25,17 +34,31 @@ const FormSchema = z.object({
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    invalid_type_error: 'Please select an order status.',
   }),
   date: z.string(),
 });
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const ProductFormSchema = z.object({
+  id: z.string(),
+  customerId: z.string({
+    invalid_type_error: 'Please select a customer.',
+  }),
+  amount: z.coerce
+    .number()
+    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+  status: z.enum(['pending', 'paid'], {
+    invalid_type_error: 'Please select an order status.',
+  }),
+  date: z.string(),
+});
 
-export async function createInvoice(prevState: State, formData: FormData) {
+const CreateOrder = FormSchema.omit({ id: true, date: true });
+const UpdateOrder = FormSchema.omit({ id: true, date: true });
+
+export async function createOrder(prevState: State, formData: FormData) {
   // Validate form using Zod
-  const validatedFields = CreateInvoice.safeParse({
+  const validatedFields = CreateOrder.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -45,7 +68,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      message: 'Missing Fields. Failed to Create Order.',
     };
   }
 
@@ -57,27 +80,27 @@ export async function createInvoice(prevState: State, formData: FormData) {
   // Insert data into the database
   try {
     await sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
+        INSERT INTO orders (customer_id, amount, status, date)
         VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
         `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: 'Database Error: Failed to Create Order.',
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  // Revalidate the cache for the orders page and redirect the user.
+  revalidatePath('/dashboard/orders');
+  redirect('/dashboard/orders');
 }
 
-export async function updateInvoice(
+export async function updateOrder(
   id: string,
   prevState: State,
   formData: FormData,
 ) {
-  const validatedFields = UpdateInvoice.safeParse({
+  const validatedFields = UpdateOrder.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -86,7 +109,7 @@ export async function updateInvoice(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
+      message: 'Missing Fields. Failed to Update Order.',
     };
   }
 
@@ -95,25 +118,25 @@ export async function updateInvoice(
 
   try {
     await sql`
-        UPDATE invoices
+        UPDATE orders
         SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
         WHERE id = ${id}
         `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    return { message: 'Database Error: Failed to Update Order.' };
   }
 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/orders');
+  redirect('/dashboard/orders');
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteOrder(id: string) {
   try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath('/dashboard/invoices');
-    return { message: 'Deleted Invoice.' };
+    await sql`DELETE FROM orders WHERE id = ${id}`;
+    revalidatePath('/dashboard/orders');
+    return { message: 'Deleted Order.' };
   } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+    return { message: 'Database Error: Failed to Delete Order.' };
   }
 }
 
