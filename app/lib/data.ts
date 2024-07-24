@@ -8,9 +8,9 @@ import {
   LatestOrderRaw,
   User,
   Revenue,
-  Product,
   ProductForm,
   ProductsTable,
+  ProductField,
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -61,23 +61,27 @@ export async function fetchCardData() {
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
          FROM orders`;
+    const productCountPromise = sql`SELECT COUNT(*) FROM products`;
 
     const data = await Promise.all([
       orderCountPromise,
       customerCountPromise,
       orderStatusPromise,
+      productCountPromise,
     ]);
 
     const numberOfOrders = Number(data[0].rows[0].count ?? '0');
     const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
     const totalPaidOrders = formatCurrency(data[2].rows[0].paid ?? '0');
     const totalPendingOrders = formatCurrency(data[2].rows[0].pending ?? '0');
+    const numberOfProducts = Number(data[3].rows[0].count ?? '0');
 
     return {
       numberOfCustomers,
       numberOfOrders,
       totalPaidOrders,
       totalPendingOrders,
+      numberOfProducts,
     };
   } catch (error) {
     console.error('Database Error:', error);
@@ -86,10 +90,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredOrders(
-  query: string,
-  currentPage: number,
-) {
+export async function fetchFilteredOrders(query: string, currentPage: number) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
@@ -97,17 +98,21 @@ export async function fetchFilteredOrders(
     const orders = await sql<OrdersTable>`
       SELECT
         orders.id,
+        orders.quantity,
         orders.amount,
         orders.date,
         orders.status,
-        customers.name,
-        customers.email,
-        customers.image_url
+        orders.product_id,
+        customers.name AS customer_name,
+        customers.image_url,
+        products.name AS product_name
       FROM orders
       JOIN customers ON orders.customer_id = customers.id
+      JOIN products ON orders.product_id = products.id
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
+        products.id::text ILIKE ${`%${query}%`} OR
+        products.name ILIKE ${`%${query}%`} OR
         orders.amount::text ILIKE ${`%${query}%`} OR
         orders.date::text ILIKE ${`%${query}%`} OR
         orders.status ILIKE ${`%${query}%`}
@@ -149,24 +154,21 @@ export async function fetchOrderById(id: string) {
   noStore();
 
   try {
-    const data = await sql<OrderForm>`
+    const orders = await sql<OrderForm>`
       SELECT
         orders.id,
         orders.customer_id,
+        orders.product_id,
+        orders.quantity,
         orders.amount,
-        orders.status
+        orders.status,
+        products.category
       FROM orders
+      JOIN products ON orders.product_id = products.id
       WHERE orders.id = ${id};
     `;
 
-    const order = data.rows.map((order) => ({
-      ...order,
-      // Convert amount from cents to dollars
-      amount: order.amount / 100,
-    }));
-
-    console.log(order); // Order is an empty array []
-    return order[0];
+    return orders.rows[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch order.');
@@ -177,16 +179,16 @@ export async function fetchProducts() {
   noStore();
 
   try {
-      const products = await sql<Product>`
-      SELECT * 
+    const products = await sql<ProductField>`
+      SELECT id, name, category 
       FROM products
       ORDER BY products.name DESC
-      LIMIT 5`;
-     
-      return products.rows;
+      `;
+
+    return products.rows;
   } catch (error) {
-      console.error('Database Error:', error);
-      throw new Error('Failed to fetch products.');
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch products.');
   }
 }
 
@@ -249,20 +251,13 @@ export async function fetchProductById(id: string) {
   noStore();
 
   try {
-    const data = await sql<ProductForm>`
+    const products = await sql<ProductForm>`
       SELECT *
       FROM products
       WHERE products.id = ${id};
     `;
 
-    const product = data.rows.map((product) => ({
-      ...product,
-      // Convert price from cents to dollars
-      price: product.price / 100,
-    }));
-
-    console.log(product); // Product is an empty array []
-    return product[0];
+    return products.rows[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch product.');

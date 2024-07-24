@@ -10,16 +10,8 @@ import { z } from 'zod';
 export type State = {
   errors?: {
     customerId?: string[];
-    amount?: string[];
-    status?: string[];
-  };
-  message?: string | null;
-};
-
-export type ProductState = {
-  errors?: {
-    customerId?: string[];
-    amount?: string[];
+    productId?: string[];
+    quantity?: string[];
     status?: string[];
   };
   message?: string | null;
@@ -30,23 +22,12 @@ const FormSchema = z.object({
   customerId: z.string({
     invalid_type_error: 'Please select a customer.',
   }),
-  amount: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an order status.',
+  productId: z.string({
+    invalid_type_error: 'Please select a product.',
   }),
-  date: z.string(),
-});
-
-const ProductFormSchema = z.object({
-  id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
-  }),
-  amount: z.coerce
+  quantity: z.coerce
     .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+    .gt(0, { message: 'Please enter a quantity greater than 0.' }),
   status: z.enum(['pending', 'paid'], {
     invalid_type_error: 'Please select an order status.',
   }),
@@ -60,7 +41,8 @@ export async function createOrder(prevState: State, formData: FormData) {
   // Validate form using Zod
   const validatedFields = CreateOrder.safeParse({
     customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
+    productId: formData.get('productId'),
+    quantity: formData.get('quantity'),
     status: formData.get('status'),
   });
 
@@ -73,15 +55,13 @@ export async function createOrder(prevState: State, formData: FormData) {
   }
 
   // Prepare data for insertion into the database
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
+  const { customerId, productId, quantity, status } = validatedFields.data;
 
   // Insert data into the database
   try {
     await sql`
-        INSERT INTO orders (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+        INSERT INTO orders (customer_id, product_id, quantity, status)
+        VALUES (${customerId}, ${productId}, ${quantity}, ${status})
         `;
   } catch (error) {
     // If a database error occurs, return a more specific error.
@@ -102,7 +82,8 @@ export async function updateOrder(
 ) {
   const validatedFields = UpdateOrder.safeParse({
     customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
+    productId: formData.get('productId'),
+    quantity: formData.get('quantity'),
     status: formData.get('status'),
   });
 
@@ -113,17 +94,16 @@ export async function updateOrder(
     };
   }
 
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
+  const { customerId, productId, quantity, status } = validatedFields.data;
 
   try {
     await sql`
         UPDATE orders
-        SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+        SET customer_id = ${customerId}, product_id = ${productId}, quantity = ${quantity}, status = ${status}
         WHERE id = ${id}
         `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Order.' };
+    return { message: error + ' Failed to Update Order.' };
   }
 
   revalidatePath('/dashboard/orders');

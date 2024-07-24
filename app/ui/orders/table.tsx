@@ -31,11 +31,12 @@ export default async function OrdersTable({
                         className="mr-2 rounded-full"
                         width={28}
                         height={28}
-                        alt={`${order.name}'s profile picture`}
+                        alt={`${order.customer_name}'s profile picture`}
                       />
-                      <p>{order.name}</p>
+                      <p>{order.customer_name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{order.email}</p>
+                    <p className="text-sm text-gray-500">{order.product_id}</p>
+                    <p>{order.quantity}</p>
                   </div>
                   <OrderStatus status={order.status} />
                 </div>
@@ -61,13 +62,16 @@ export default async function OrdersTable({
                   Customer
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Product ID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  Quantity
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  Total
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Date Created
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
@@ -90,13 +94,16 @@ export default async function OrdersTable({
                         className="rounded-full"
                         width={28}
                         height={28}
-                        alt={`${order.name}'s profile picture`}
+                        alt={`${order.customer_name}'s profile picture`}
                       />
-                      <p>{order.name}</p>
+                      <p>{order.customer_name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.email}
+                    {order.product_id}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {order.quantity}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(order.amount)}

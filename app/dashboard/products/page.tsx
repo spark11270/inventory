@@ -1,6 +1,7 @@
-import Pagination from '@/app/ui/orders/pagination';
+import Pagination from '@/app/ui/products/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/products/table';
+import { CreateProduct } from '@/app/ui/products/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { OrdersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -30,6 +31,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search products..." />
+        <CreateProduct />
       </div>
       <Suspense key={query + currentPage} fallback={<OrdersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

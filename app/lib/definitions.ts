@@ -16,7 +16,7 @@ export type Product = {
   id: string;
   name: string;
   category: string;
-  price: string;
+  price: number;
   stock: number;
   expiry: string;
   status: 'in-stock' | 'out-of-stock';
@@ -25,6 +25,8 @@ export type Product = {
 export type Order = {
   id: string;
   customer_id: string;
+  product_id: string;
+  quantity: number;
   amount: number;
   date: string;
   status: 'pending' | 'paid';
@@ -50,8 +52,10 @@ export type LatestOrderRaw = Omit<LatestOrder, 'amount'> & {
 export type OrdersTable = {
   id: string;
   customer_id: string;
-  name: string;
-  email: string;
+  product_id: string;
+  customer_name: string;
+  product_name: string;
+  quantity: number;
   image_url: string;
   date: string;
   amount: number;
@@ -64,6 +68,7 @@ export type ProductsTable = {
   category: string;
   price: number;
   expiry: string;
+  stock: number;
   status: 'in-stock' | 'out-of-stock';
 };
 
@@ -92,9 +97,17 @@ export type CustomerField = {
   name: string;
 };
 
+export type ProductField = {
+  id: string;
+  name: string;
+  category: string;
+};
+
 export type OrderForm = {
   id: string;
   customer_id: string;
+  product_id: string;
+  quantity: number;
   amount: number;
   status: 'pending' | 'paid';
 };
@@ -102,7 +115,9 @@ export type OrderForm = {
 export type ProductForm = {
   id: string;
   name: string;
-  category: Category;
-  stock: number;
+  category: string;
   price: number;
+  stock: number;
+  expiry: string;
+  status: 'in-stock' | 'out-of-stock';
 };

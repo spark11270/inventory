@@ -1,9 +1,10 @@
 import Form from '@/app/ui/orders/create-form';
 import Breadcrumbs from '@/app/ui/orders/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchCustomers, fetchProducts } from '@/app/lib/data';
 
 export default async function Page() {
   const customers = await fetchCustomers();
+  const products = await fetchProducts();
 
   return (
     <main>
@@ -17,7 +18,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form customers={customers} products={products} />
     </main>
   );
 }
