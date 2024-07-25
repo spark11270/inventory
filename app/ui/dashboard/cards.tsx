@@ -1,19 +1,25 @@
 import {
+  CurrencyDollarIcon,
   BanknotesIcon,
   ClockIcon,
   UserGroupIcon,
   InboxIcon,
   ShoppingBagIcon,
+  CheckCircleIcon,
+  XCircleIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
 import { fetchCardData } from '@/app/lib/data';
 
 const iconMap = {
+  revenue: CurrencyDollarIcon,
   collected: BanknotesIcon,
   customers: UserGroupIcon,
   pending: ClockIcon,
   orders: InboxIcon,
   products: ShoppingBagIcon,
+  inStock: CheckCircleIcon,
+  outOfStock: XCircleIcon,
 };
 
 export default async function CardWrapper() {
@@ -23,12 +29,18 @@ export default async function CardWrapper() {
     totalPaidOrders,
     totalPendingOrders,
     numberOfProducts,
+    totalRevenue,
+    totalInStock,
+    totalOutOfStock,
   } = await fetchCardData();
 
   return (
     <>
       <Card title="Collected" value={totalPaidOrders} type="collected" />
       <Card title="Pending" value={totalPendingOrders} type="pending" />
+      <Card title="In Stock" value={totalInStock} type="inStock" />
+      <Card title="Out of Stock" value={totalOutOfStock} type="outOfStock" />
+      <Card title="Total Revenue" value={totalRevenue} type="revenue" />
       <Card title="Total Orders" value={numberOfOrders} type="orders" />
       <Card title="Total Products" value={numberOfProducts} type="products" />
       <Card
@@ -47,7 +59,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'orders' | 'products' | 'customers' | 'pending' | 'collected';
+  type: 'orders' | 'products' | 'customers' | 'pending' | 'collected' | 'revenue' | 'inStock' | 'outOfStock';
 }) {
   const Icon = iconMap[type];
 

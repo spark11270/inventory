@@ -103,6 +103,41 @@ async function seedProducts(client) {
       EXECUTE FUNCTION update_product_status();
     `;
 
+    // Create trigger function to update the stock history
+    const createUpdateStockHistory = await client.sql`
+      CREATE OR REPLACE FUNCTION update_stock_history() RETURNS TRIGGER AS $$
+      BEGIN
+        INSERT INTO stock_history (category, stock, valid_from, valid_to)
+        SELECT
+          OLD.category,
+          OLD.stock,
+          COALESCE((SELECT MAX(valid_to) FROM stock_history WHERE category = OLD.category), '2020-01-01'::TIMESTAMP),
+          CURRENT_TIMESTAMP
+        WHERE EXISTS (
+          SELECT 1 FROM stock_history
+          WHERE category = OLD.category AND valid_to = 'infinity'
+        );
+        UPDATE stock_history
+        SET valid_to = CURRENT_TIMESTAMP
+        WHERE category = OLD.category AND valid_to = 'infinity';
+        INSERT INTO stock_history (category, stock, valid_from, valid_to)
+        VALUES (NEW.category, NEW.stock, CURRENT_TIMESTAMP, 'infinity')
+        ON CONFLICT (category, valid_from) DO NOTHING;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+    `;
+
+    // Create trigger to call function after update
+    const triggerUpdateStockHistory = await client.sql`
+      CREATE TRIGGER update_stock_history_trigger
+      AFTER UPDATE ON products
+      FOR EACH ROW
+      WHEN (OLD.stock IS DISTINCT FROM NEW.stock)
+      EXECUTE FUNCTION update_stock_history();
+    `;
+
+
     // Insert data into the "products" table
     const insertedProducts = await Promise.all(
       products.map(
@@ -119,11 +154,39 @@ async function seedProducts(client) {
     return {
       createTable,
       createTriggerFunction,
+      createUpdateStockHistory,
       createTrigger,
+      triggerUpdateStockHistory,
       products: insertedProducts,
     };
   } catch (error) {
     console.error('Error seeding products:', error);
+    throw error;
+  }
+}
+
+async function seedStockHistory(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "stock_history" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS stock_history (
+        category VARCHAR(255) NOT NULL,
+        stock INT NOT NULL,
+        valid_from TIMESTAMP NOT NULL,
+        valid_to TIMESTAMP NOT NULL,
+        PRIMARY KEY (category, valid_from)
+      );
+    `;
+
+    console.log(`Created "stock_history" table`);
+
+    return {
+      createTable
+    };
+  } catch (error) {
+    console.error('Error seeding stock history:', error);
     throw error;
   }
 }
@@ -178,7 +241,7 @@ async function seedOrders(client) {
     customer_id UUID NOT NULL REFERENCES customers(id),
     product_id UUID NOT NULL REFERENCES products(id),
     quantity INT NOT NULL,
-    amount DECIMAL(10, 2),
+    amount DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
     date DATE NOT NULL DEFAULT CURRENT_DATE,
     status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'paid'))
   );
@@ -278,12 +341,36 @@ async function seedOrders(client) {
       EXECUTE FUNCTION revert_product_stock();
     `;
 
+    // Create trigger function to update revenue
+    const createUpdateRevenue = await client.sql`
+    CREATE OR REPLACE FUNCTION update_revenue() RETURNS TRIGGER AS $$
+    BEGIN
+      INSERT INTO revenue (month, revenue)
+      SELECT
+        DATE_TRUNC('month', NEW.date) AS month,
+        COALESCE(SUM(amount), 0) AS revenue
+        FROM orders
+        WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', NEW.date)
+        on CONFLICT (month) DO UPDATE SET revenue = EXCLUDED.revenue;
+        RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+  `;
+
+  // Create trigger to call function after an order is inserted/updated
+  const triggerUpdateRevenue = await client.sql`
+    CREATE TRIGGER update_revenue_trigger
+    AFTER INSERT OR UPDATE ON orders
+    FOR EACH ROW
+    EXECUTE FUNCTION update_revenue();
+  `;
+
     // Insert data into the "orders" table
     const insertedOrders = await Promise.all(
       orders.map(
         (order) => client.sql`
-        INSERT INTO orders (customer_id, product_id, quantity, status)
-        VALUES (${order.customer_id}, ${order.product_id}, ${order.quantity}, ${order.status})
+        INSERT INTO orders (customer_id, product_id, quantity, date, status)
+        VALUES (${order.customer_id}, ${order.product_id}, ${order.quantity}, ${order.date}, ${order.status})
       `,
       ),
     );
@@ -297,10 +384,12 @@ async function seedOrders(client) {
       createUpdateAmount,
       createReduceStock,
       createRevertStock,
+      createUpdateRevenue,
       triggerUpdateAmount,
       triggerReduceStock,
       triggerRevertStockDelete,
       triggerRevertStockUpdate,
+      triggerUpdateRevenue,
       orders: insertedOrders,
     };
   } catch (error) {
@@ -314,29 +403,15 @@ async function seedRevenue(client) {
     // Create the "revenue" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS revenue (
-        month VARCHAR(4) NOT NULL UNIQUE,
+        month DATE NOT NULL UNIQUE,
         revenue INT NOT NULL
       );
     `;
 
     console.log(`Created "revenue" table`);
 
-    // Insert data into the "revenue" table
-    const insertedRevenue = await Promise.all(
-      revenue.map(
-        (rev) => client.sql`
-        INSERT INTO revenue (month, revenue)
-        VALUES (${rev.month}, ${rev.revenue})
-        ON CONFLICT (month) DO NOTHING;
-      `,
-      ),
-    );
-
-    console.log(`Seeded ${insertedRevenue.length} revenue`);
-
     return {
       createTable,
-      revenue: insertedRevenue,
     };
   } catch (error) {
     console.error('Error seeding revenue:', error);
@@ -1338,6 +1413,7 @@ async function main() {
 
   await seedUsers(client);
   await seedCustomers(client);
+  await seedStockHistory(client);
   await seedProducts(client);
   await seedSnacks(client);
   await seedPantry(client);
@@ -1352,8 +1428,8 @@ async function main() {
   await seedCleaning(client);
   await seedFloral(client);
   await seedHousehold(client);
-  await seedOrders(client);
   await seedRevenue(client);
+  await seedOrders(client);
 
   await client.end();
 }

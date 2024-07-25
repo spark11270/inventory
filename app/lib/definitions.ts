@@ -107,6 +107,7 @@ export type OrderForm = {
   id: string;
   customer_id: string;
   product_id: string;
+  category: string;
   quantity: number;
   amount: number;
   status: 'pending' | 'paid';

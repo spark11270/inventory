@@ -12,7 +12,7 @@ import {
   ProductsTable,
   ProductField,
 } from './definitions';
-import { formatCurrency } from './utils';
+import { formatCurrency, formatDateToLocal } from './utils';
 
 export async function fetchRevenue() {
   noStore();
@@ -20,9 +20,15 @@ export async function fetchRevenue() {
   try {
     const data = await sql<Revenue>`SELECT * FROM revenue`;
 
-    console.log('Data fetch completed after 3 seconds.');
+    const revenue = data.rows.map((revenue) => ({
+      ...revenue,
+      month: formatDateToLocal(revenue.month),
+    }));
 
-    return data.rows;
+    console.log('Data fetch completed after 3 seconds.');
+    console.log(revenue[0])
+
+    return revenue;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
@@ -57,17 +63,36 @@ export async function fetchCardData() {
   try {
     const orderCountPromise = sql`SELECT COUNT(*) FROM orders`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const orderStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM orders`;
+    const orderStatusPromise = sql`
+      SELECT
+      SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
+      SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
+      FROM orders
+    `;
     const productCountPromise = sql`SELECT COUNT(*) FROM products`;
+    const totalRevenuePromise = sql`
+      SELECT SUM(revenue) AS total
+      FROM revenue;
+    `;
+    const inStockCountPromise = sql`
+      SELECT COUNT(*)
+      FROM products
+      WHERE status = 'in-stock'
+    `;
+    const outOfStockCountPromise = sql`
+      SELECT COUNT(*)
+      FROM products
+      WHERE status = 'out-of-stock'
+    `;
 
     const data = await Promise.all([
       orderCountPromise,
       customerCountPromise,
       orderStatusPromise,
       productCountPromise,
+      totalRevenuePromise,
+      inStockCountPromise,
+      outOfStockCountPromise,
     ]);
 
     const numberOfOrders = Number(data[0].rows[0].count ?? '0');
@@ -75,6 +100,9 @@ export async function fetchCardData() {
     const totalPaidOrders = formatCurrency(data[2].rows[0].paid ?? '0');
     const totalPendingOrders = formatCurrency(data[2].rows[0].pending ?? '0');
     const numberOfProducts = Number(data[3].rows[0].count ?? '0');
+    const totalRevenue = formatCurrency(data[4].rows[0].total ?? '0');
+    const totalInStock =  Number(data[5].rows[0].count ?? '0');
+    const totalOutOfStock =  Number(data[6].rows[0].count ?? '0');
 
     return {
       numberOfCustomers,
@@ -82,6 +110,9 @@ export async function fetchCardData() {
       totalPaidOrders,
       totalPendingOrders,
       numberOfProducts,
+      totalRevenue,
+      totalInStock,
+      totalOutOfStock,
     };
   } catch (error) {
     console.error('Database Error:', error);
