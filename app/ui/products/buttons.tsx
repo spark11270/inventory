@@ -2,7 +2,7 @@ import { deleteProduct } from '@/app/lib/productActions';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
-export function CreateProduct({ user } : { user: boolean }) {
+export function CreateProduct({ user }: { user: boolean }) {
   return (
     <Link
       href="/dashboard/products/create"

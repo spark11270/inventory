@@ -71,7 +71,7 @@ async function seedProducts(client) {
         price DECIMAL(10, 2) NOT NULL,
         stock INT NOT NULL,
         expiry DATE,
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -300,10 +300,10 @@ async function seedOrders(client) {
       $$ LANGUAGE plpgsql;
     `;
 
-    // Create trigger to call function after insert/update
+    // Create trigger to call function after insert
     const triggerReduceStock = await client.sql`
       CREATE TRIGGER reduce_stock_trigger
-      AFTER INSERT OR UPDATE ON orders
+      AFTER INSERT ON orders
       FOR EACH ROW
       EXECUTE FUNCTION reduce_product_stock();
     `;
@@ -321,19 +321,39 @@ async function seedOrders(client) {
     `;
 
     // Create trigger to call function after delete
-    const triggerRevertStockDelete = await client.sql`
-      CREATE TRIGGER revert_stock_trigger_delete
+    const triggerRevertStock = await client.sql`
+      CREATE TRIGGER revert_stock_trigger
       AFTER DELETE ON orders
       FOR EACH ROW
       EXECUTE FUNCTION revert_product_stock();
     `;
 
+    // Create trigger function to update product stock
+    const createUpdateStock = await client.sql`
+      CREATE OR REPLACE FUNCTION update_product_stock() RETURNS TRIGGER AS $$
+      BEGIN
+        IF NEW.product_id <> OLD.product_id THEN
+          UPDATE products
+          SET stock = stock + OLD.quantity
+          WHERE id = OLD.product_id;
+          UPDATE products
+          SET stock = stock - NEW.quantity
+          WHERE id = NEW.product_id;
+        ELSE
+          UPDATE products
+          SET stock = stock + OLD.quantity - NEW.quantity
+          WHERE id = NEW.product_id;
+        END IF;
+      END;
+      $$ LANGUAGE plpgsql;
+    `;
+
     // Create trigger to call function before update
-    const triggerRevertStockUpdate = await client.sql`
-      CREATE TRIGGER revert_stock_trigger_update
-      BEFORE UPDATE ON orders
+    const triggerUpdateStock = await client.sql`
+      CREATE TRIGGER update_stock_trigger
+      AFTER UPDATE ON orders
       FOR EACH ROW
-      EXECUTE FUNCTION revert_product_stock();
+      EXECUTE FUNCTION update_product_stock();
     `;
 
     // Create trigger function to update revenue
@@ -381,11 +401,12 @@ async function seedOrders(client) {
       createUpdateAmount,
       createReduceStock,
       createRevertStock,
+      createUpdateStock,
       createUpdateRevenue,
       triggerUpdateAmount,
       triggerReduceStock,
-      triggerRevertStockDelete,
-      triggerRevertStockUpdate,
+      triggerRevertStock,
+      triggerUpdateStock,
       triggerUpdateRevenue,
       orders: insertedOrders,
     };
@@ -428,7 +449,7 @@ async function seedSnacks(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       )
     `;
 
@@ -504,7 +525,7 @@ async function seedPantry(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -580,7 +601,7 @@ async function seedCandy(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -656,7 +677,7 @@ async function seedBeverages(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -732,7 +753,7 @@ async function seedMeatAndSeafood(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -810,7 +831,7 @@ async function seedBakeryAndDesserts(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -888,7 +909,7 @@ async function seedBreakfast(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -964,7 +985,7 @@ async function seedCoffee(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -1040,7 +1061,7 @@ async function seedDeli(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -1116,7 +1137,7 @@ async function seedOrganic(client) {
         stock INT,
         expiry DATE,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -1191,7 +1212,7 @@ async function seedCleaning(client) {
         name VARCHAR(200),
         stock INT,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -1266,7 +1287,7 @@ async function seedFloral(client) {
         name VARCHAR(200),
         stock INT,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 
@@ -1341,7 +1362,7 @@ async function seedHousehold(client) {
         name VARCHAR(200),
         stock INT,
         price DECIMAL(10, 2),
-        status VARCHAR(20) NOT NULL CHECK (status IN ('in-stock', 'out-of-stock'))
+        status VARCHAR(20) CHECK (status IN ('in-stock', 'out-of-stock'))
       );
     `;
 

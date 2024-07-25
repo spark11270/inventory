@@ -46,13 +46,11 @@ const FormSchema = z.object({
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   stock: z.coerce.number().gt(-1, { message: 'Please enter a valid amount.' }),
-  expiry: z.coerce.date().refine((data) => data > new Date(), {
-    message: 'Expiry date must be in the future',
-  }),
+  expiry: z.string().nullish(),
 });
 
 const CreateProduct = FormSchema.omit({ id: true });
-const UpdateProduct = FormSchema;
+const UpdateProduct = FormSchema.omit({ id: true });
 
 export async function createProduct(prevState: State, formData: FormData) {
   // Validate form using Zod
@@ -75,7 +73,7 @@ export async function createProduct(prevState: State, formData: FormData) {
   // Prepare data for insertion into the database
   const { name, category, price, stock, expiry } = validatedFields.data;
   const id = uuidv4();
-  const expiryDate = expiry.toDateString();
+  // const expiry = expiry?.toDateString();
 
   // Insert data into the database
   try {
@@ -83,101 +81,101 @@ export async function createProduct(prevState: State, formData: FormData) {
       case 'snacks':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO snacks (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'candy':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO candy (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'pantry':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO pantry (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'beverages':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO beverages (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'meatAndSeafood':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO pmeatAndSeafood (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'bakeryAndDesserts':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO bakeryAndDesserts (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'breakfast':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO breakfast (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'coffee':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO coffee (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'deli':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO deli (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'organic':
         await sql`
             INSERT INTO products (id, name, category, stock, price, expiry)
-            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
             INSERT INTO organic (id, name, stock, price, expiry)
-            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiryDate})
+            VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
       case 'cleaning':
@@ -245,127 +243,127 @@ export async function updateProduct(
   }
 
   const { name, category, price, stock, expiry } = validatedFields.data;
-  const expiryDate = expiry.toDateString();
+  // const expiry = expiry?.toDateString();
 
   try {
     switch (category) {
       case 'snacks':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE snacks
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'candy':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE candy
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'pantry':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE pantry
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'beverages':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE beverages
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'meatAndSeafood':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE meatAndSeafood
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'bakeryAndDesserts':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE bakeryAndDesserts
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'breakfast':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE breakfast
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'coffee':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE coffee
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'deli':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE deli
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;
       case 'organic':
         await sql`
             UPDATE products
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         await sql`
             UPDATE organic
-            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiryDate}
+            SET name = ${name}, price = ${price}, stock = ${stock}, expiry = ${expiry}
             WHERE id = ${id}
             `;
         break;

@@ -37,6 +37,8 @@ export default function EditProductForm({ product }: { product: ProductForm }) {
     return;
   }
 
+  console.log('here', product.id);
+
   return (
     <form action={dispatch} aria-describedby="update-error">
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -341,7 +343,7 @@ export default function EditProductForm({ product }: { product: ProductForm }) {
 
         {/* Price */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">
             Set price
           </label>
           <div className="relative mt-2 rounded-md">
@@ -371,7 +373,7 @@ export default function EditProductForm({ product }: { product: ProductForm }) {
 
         {/* Product Stock */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="stock" className="mb-2 block text-sm font-medium">
             Set stock
           </label>
           <div className="relative mt-2 rounded-md">
@@ -401,14 +403,14 @@ export default function EditProductForm({ product }: { product: ProductForm }) {
 
         {/* Product Expiry */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="expiry" className="mb-2 block text-sm font-medium">
             Set expiry
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="price"
-                name="price"
+                id="expiry"
+                name="expiry"
                 type="string"
                 placeholder="Enter expiry date (YYYY-MM-DD)"
                 defaultValue={product.expiry}

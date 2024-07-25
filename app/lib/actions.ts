@@ -103,6 +103,7 @@ export async function updateOrder(
         WHERE id = ${id}
         `;
   } catch (error) {
+    console.log(error);
     return { message: error + ' Failed to Update Order.' };
   }
 

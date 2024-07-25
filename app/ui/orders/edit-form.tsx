@@ -46,8 +46,6 @@ export default function EditOrderForm({
     return;
   }
 
-  console.log(order.quantity);
-
   return (
     <form action={dispatch} aria-describedby="update-error">
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
