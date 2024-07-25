@@ -11,6 +11,7 @@ import {
   ProductForm,
   ProductsTable,
   ProductField,
+  Product,
 } from './definitions';
 import { formatCurrency, formatDateToLocal } from './utils';
 
@@ -18,7 +19,11 @@ export async function fetchRevenue() {
   noStore();
 
   try {
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    const data = await sql<Revenue>`
+    SELECT *
+    FROM revenue
+    ORDER BY month ASC;
+    `;
 
     const revenue = data.rows.map((revenue) => ({
       ...revenue,
@@ -26,7 +31,7 @@ export async function fetchRevenue() {
     }));
 
     console.log('Data fetch completed after 3 seconds.');
-    console.log(revenue[0])
+    console.log(revenue[0]);
 
     return revenue;
   } catch (error) {
@@ -51,6 +56,31 @@ export async function fetchLatestOrders() {
       amount: formatCurrency(order.amount),
     }));
     return latestOrders;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the latest orders.');
+  }
+}
+
+export async function fetchBestSellingProducts() {
+  noStore();
+
+  try {
+    const products = await sql<Product>`
+      SELECT 
+        products.id,
+        products.name,
+        products.category,
+        SUM(orders.amount) AS total_revenue,
+        SUM(orders.quantity) AS total_sold
+      FROM orders
+      JOIN products ON orders.product_id = products.id
+      WHERE orders.status = 'paid'
+      GROUP BY products.id, products.name, products.category
+      ORDER BY total_revenue DESC, total_sold DESC
+      LIMIT 5`;
+
+    return products.rows;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the latest orders.');
@@ -101,8 +131,8 @@ export async function fetchCardData() {
     const totalPendingOrders = formatCurrency(data[2].rows[0].pending ?? '0');
     const numberOfProducts = Number(data[3].rows[0].count ?? '0');
     const totalRevenue = formatCurrency(data[4].rows[0].total ?? '0');
-    const totalInStock =  Number(data[5].rows[0].count ?? '0');
-    const totalOutOfStock =  Number(data[6].rows[0].count ?? '0');
+    const totalInStock = Number(data[5].rows[0].count ?? '0');
+    const totalOutOfStock = Number(data[6].rows[0].count ?? '0');
 
     return {
       numberOfCustomers,

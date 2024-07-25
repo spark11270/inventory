@@ -8,6 +8,7 @@ import {
   LatestOrdersSkeleton,
   RevenueChartSkeleton,
 } from '@/app/ui/skeletons';
+import BestSellingProducts from '@/app/ui/dashboard/best-selling';
 
 export default async function Page() {
   return (
@@ -25,7 +26,8 @@ export default async function Page() {
           <RevenueChart />
         </Suspense>
         <Suspense fallback={<LatestOrdersSkeleton />}>
-          <LatestOrders />
+          {/* <LatestOrders /> */}
+          <BestSellingProducts />
         </Suspense>
       </div>
     </main>

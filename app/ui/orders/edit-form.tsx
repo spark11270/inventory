@@ -15,7 +15,14 @@ import { useFormState } from 'react-dom';
 import { useState } from 'react';
 import { CiBacon } from 'react-icons/ci';
 import { GiHotMeal } from 'react-icons/gi';
-import { LuPopcorn, LuWheat, LuCandy, LuCoffee, LuLeaf, LuFlower } from 'react-icons/lu';
+import {
+  LuPopcorn,
+  LuWheat,
+  LuCandy,
+  LuCoffee,
+  LuLeaf,
+  LuFlower,
+} from 'react-icons/lu';
 import { MdOutlineBakeryDining, MdOutlineCleanHands } from 'react-icons/md';
 import { PiHouseLineBold } from 'react-icons/pi';
 import { TbBottle, TbMeat } from 'react-icons/tb';
@@ -39,7 +46,7 @@ export default function EditOrderForm({
     return;
   }
 
-  console.log(order.quantity)
+  console.log(order.quantity);
 
   return (
     <form action={dispatch} aria-describedby="update-error">
@@ -100,7 +107,7 @@ export default function EditOrderForm({
                   htmlFor="snacks"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Snacks <LuPopcorn size={15}/>
+                  Snacks <LuPopcorn size={15} />
                   {selected == 'snacks' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -119,7 +126,7 @@ export default function EditOrderForm({
                   htmlFor="pantry"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Pantry Products <LuWheat size={15}/>
+                  Pantry Products <LuWheat size={15} />
                   {selected == 'pantry' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -138,7 +145,7 @@ export default function EditOrderForm({
                   htmlFor="beverages"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Beverages <TbBottle size={15}/>
+                  Beverages <TbBottle size={15} />
                   {selected == 'beverages' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -157,7 +164,7 @@ export default function EditOrderForm({
                   htmlFor="candy"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Candy <LuCandy size={15}/>
+                  Candy <LuCandy size={15} />
                   {selected == 'candy' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -176,7 +183,7 @@ export default function EditOrderForm({
                   htmlFor="breakfast"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Breakfast <CiBacon size={15}/>
+                  Breakfast <CiBacon size={15} />
                   {selected == 'breakfast' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -195,8 +202,10 @@ export default function EditOrderForm({
                   htmlFor="meatAndSeafood"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Meat & Seafood <TbMeat size={15}/>
-                  {selected == 'meatAndSeafood' && <CheckIcon className="h-4 w-4" />}
+                  Meat & Seafood <TbMeat size={15} />
+                  {selected == 'meatAndSeafood' && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
                 </label>
               </div>
               <div className="flex items-center">
@@ -214,8 +223,10 @@ export default function EditOrderForm({
                   htmlFor="bakeryAndDesserts"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Bakery & Desserts <MdOutlineBakeryDining size={15}/>
-                  {selected == 'bakeryAndDesserts' && <CheckIcon className="h-4 w-4" />}
+                  Bakery & Desserts <MdOutlineBakeryDining size={15} />
+                  {selected == 'bakeryAndDesserts' && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
                 </label>
               </div>
               <div className="flex items-center">
@@ -233,7 +244,7 @@ export default function EditOrderForm({
                   htmlFor="coffee"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Coffee <LuCoffee size={15}/>
+                  Coffee <LuCoffee size={15} />
                   {selected == 'coffee' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -252,7 +263,7 @@ export default function EditOrderForm({
                   htmlFor="deli"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Deli <GiHotMeal size={15}/>
+                  Deli <GiHotMeal size={15} />
                   {selected == 'deli' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -271,7 +282,7 @@ export default function EditOrderForm({
                   htmlFor="organic"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Organic <LuLeaf size={15}/>
+                  Organic <LuLeaf size={15} />
                   {selected == 'organic' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -290,8 +301,8 @@ export default function EditOrderForm({
                   htmlFor="cleaning"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Cleaning Supplies <MdOutlineCleanHands size={15}/>
-                  {selected == 'cleaning' && <CheckIcon className="h-4 w-4" /> }
+                  Cleaning Supplies <MdOutlineCleanHands size={15} />
+                  {selected == 'cleaning' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
               <div className="flex items-center">
@@ -309,7 +320,7 @@ export default function EditOrderForm({
                   htmlFor="floral"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Floral <LuFlower size={15}/>
+                  Floral <LuFlower size={15} />
                   {selected == 'floral' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>
@@ -328,7 +339,7 @@ export default function EditOrderForm({
                   htmlFor="household"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Household Supplies <PiHouseLineBold size={15}/>
+                  Household Supplies <PiHouseLineBold size={15} />
                   {selected == 'household' && <CheckIcon className="h-4 w-4" />}
                 </label>
               </div>

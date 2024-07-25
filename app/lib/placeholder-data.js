@@ -16,10 +16,16 @@ const {
 
 const users = [
   {
-    id: '410544b2-4001-4271-9855-fec4b6a6442a',
     name: 'Admin',
     email: 'admin@email.com',
     password: 'password',
+    role: 'admin'
+  },
+  {
+    name: 'User',
+    email: 'user@email.com',
+    password: 'password',
+    role: 'user'
   },
 ];
 
@@ -92,42 +98,42 @@ const orders = [
     product_id: snacks[0].id,
     quantity: Math.floor(snacks[0].stock / 3),
     status: 'pending',
-    date: '2022-12-06',
+    date: '2023-11-06',
   },
   {
     customer_id: customers[1].id,
     product_id: pantry[0].id,
     quantity: Math.floor(pantry[0].stock / 2),
     status: 'pending',
-    date: '2022-11-14',
+    date: '2023-12-14',
   },
   {
     customer_id: customers[4].id,
     product_id: candy[0].id,
     quantity: Math.floor(candy[0].stock / 5),
     status: 'paid',
-    date: '2022-10-29',
+    date: '2024-02-29',
   },
   {
     customer_id: customers[3].id,
     product_id: beverages[0].id,
     quantity: Math.floor(beverages[0].stock / 6),
     status: 'paid',
-    date: '2023-09-10',
+    date: '2024-02-10',
   },
   {
     customer_id: customers[5].id,
     product_id: breakfast[0].id,
     quantity: Math.floor(breakfast[0].stock / 4),
     status: 'pending',
-    date: '2023-08-05',
+    date: '2024-05-05',
   },
   {
     customer_id: customers[7].id,
     product_id: meatAndSeafood[0].id,
     quantity: Math.floor(meatAndSeafood[0].stock / 2),
     status: 'pending',
-    date: '2023-07-16',
+    date: '2024-05-16',
   },
   {
     customer_id: customers[6].id,
@@ -141,77 +147,82 @@ const orders = [
     product_id: organic[0].id,
     quantity: Math.floor(organic[0].stock / 1.5),
     status: 'paid',
-    date: '2023-06-09',
+    date: '2023-09-09',
   },
   {
     customer_id: customers[4].id,
     product_id: coffee[0].id,
     quantity: Math.floor(coffee[0].stock / 8),
     status: 'paid',
-    date: '2023-06-17',
+    date: '2024-06-17',
   },
   {
     customer_id: customers[5].id,
     product_id: deli[0].id,
     quantity: Math.floor(deli[0].stock / 6),
     status: 'paid',
-    date: '2023-06-07',
+    date: '2024-06-07',
   },
   {
     customer_id: customers[1].id,
     product_id: household[0].id,
     quantity: Math.floor(household[0].stock / 3),
     status: 'paid',
-    date: '2023-08-19',
+    date: '2024-04-19',
   },
   {
     customer_id: customers[5].id,
     product_id: floral[0].id,
     quantity: Math.floor(floral[0].stock / 2),
     status: 'paid',
-    date: '2023-06-03',
+    date: '2023-10-03',
   },
   {
     customer_id: customers[2].id,
     product_id: cleaning[0].id,
     quantity: Math.floor(cleaning[0].stock / 3),
     status: 'paid',
-    date: '2023-06-18',
+    date: '2023-08-18',
   },
   {
     customer_id: customers[0].id,
     product_id: floral[1].id,
     quantity: Math.floor(floral[1].stock / 7),
     status: 'paid',
-    date: '2023-10-04',
+    date: '2024-01-04',
   },
   {
     customer_id: customers[2].id,
     product_id: beverages[1].id,
     quantity: Math.floor(beverages[1].stock / 10),
     status: 'paid',
-    date: '2022-06-05',
+    date: '2024-03-05',
   },
-];
-
-const revenue = [
-  { month: 'Jan', revenue: 2000 },
-  { month: 'Feb', revenue: 1800 },
-  { month: 'Mar', revenue: 2200 },
-  { month: 'Apr', revenue: 2500 },
-  { month: 'May', revenue: 2300 },
-  { month: 'Jun', revenue: 3200 },
-  { month: 'Jul', revenue: 3500 },
-  { month: 'Aug', revenue: 3700 },
-  { month: 'Sep', revenue: 2500 },
-  { month: 'Oct', revenue: 2800 },
-  { month: 'Nov', revenue: 3000 },
-  { month: 'Dec', revenue: 4800 },
+  {
+    customer_id: customers[3].id,
+    product_id: cleaning[1].id,
+    quantity: Math.floor(cleaning[1].stock / 7),
+    status: 'paid',
+    date: '2024-05-18',
+  },
+  {
+    customer_id: customers[4].id,
+    product_id: floral[2].id,
+    quantity: Math.floor(floral[2].stock / 10),
+    status: 'paid',
+    date: '2023-11-04',
+  },
+  {
+    customer_id: customers[5].id,
+    product_id: beverages[3].id,
+    quantity: Math.floor(beverages[3].stock / 4),
+    status: 'paid',
+    date: '2023-12-05',
+  },
 ];
 
 module.exports = {
   users,
   customers,
-  orders,
-  revenue,
+  orders
 };

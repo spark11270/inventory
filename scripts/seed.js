@@ -2,7 +2,6 @@ const { db } = require('@vercel/postgres');
 const {
   orders,
   customers,
-  revenue,
   users,
 } = require('../app/lib/placeholder-data.js');
 const {
@@ -32,7 +31,8 @@ async function seedUsers(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        role VARCHAR(20) NOT NULL CHECK (role IN ('user', 'admin'))
       );
     `;
 
@@ -43,8 +43,8 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, name, email, password)
-        VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
+        INSERT INTO users (name, email, password, role)
+        VALUES (${user.name}, ${user.email}, ${hashedPassword}, ${user.role})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -104,39 +104,38 @@ async function seedProducts(client) {
     `;
 
     // Create trigger function to update the stock history
-    const createUpdateStockHistory = await client.sql`
-      CREATE OR REPLACE FUNCTION update_stock_history() RETURNS TRIGGER AS $$
-      BEGIN
-        INSERT INTO stock_history (category, stock, valid_from, valid_to)
-        SELECT
-          OLD.category,
-          OLD.stock,
-          COALESCE((SELECT MAX(valid_to) FROM stock_history WHERE category = OLD.category), '2020-01-01'::TIMESTAMP),
-          CURRENT_TIMESTAMP
-        WHERE EXISTS (
-          SELECT 1 FROM stock_history
-          WHERE category = OLD.category AND valid_to = 'infinity'
-        );
-        UPDATE stock_history
-        SET valid_to = CURRENT_TIMESTAMP
-        WHERE category = OLD.category AND valid_to = 'infinity';
-        INSERT INTO stock_history (category, stock, valid_from, valid_to)
-        VALUES (NEW.category, NEW.stock, CURRENT_TIMESTAMP, 'infinity')
-        ON CONFLICT (category, valid_from) DO NOTHING;
-        RETURN NEW;
-      END;
-      $$ LANGUAGE plpgsql;
-    `;
+    // const createUpdateStockHistory = await client.sql`
+    //   CREATE OR REPLACE FUNCTION update_stock_history() RETURNS TRIGGER AS $$
+    //   BEGIN
+    //     INSERT INTO stock_history (category, stock, valid_from, valid_to)
+    //     SELECT
+    //       OLD.category,
+    //       OLD.stock,
+    //       COALESCE((SELECT MAX(valid_to) FROM stock_history WHERE category = OLD.category), '2020-01-01'::TIMESTAMP),
+    //       CURRENT_TIMESTAMP
+    //     WHERE EXISTS (
+    //       SELECT 1 FROM stock_history
+    //       WHERE category = OLD.category AND valid_to = 'infinity'
+    //     );
+    //     UPDATE stock_history
+    //     SET valid_to = CURRENT_TIMESTAMP
+    //     WHERE category = OLD.category AND valid_to = 'infinity';
+    //     INSERT INTO stock_history (category, stock, valid_from, valid_to)
+    //     VALUES (NEW.category, NEW.stock, CURRENT_TIMESTAMP, 'infinity')
+    //     ON CONFLICT (category, valid_from) DO NOTHING;
+    //     RETURN NEW;
+    //   END;
+    //   $$ LANGUAGE plpgsql;
+    // `;
 
-    // Create trigger to call function after update
-    const triggerUpdateStockHistory = await client.sql`
-      CREATE TRIGGER update_stock_history_trigger
-      AFTER UPDATE ON products
-      FOR EACH ROW
-      WHEN (OLD.stock IS DISTINCT FROM NEW.stock)
-      EXECUTE FUNCTION update_stock_history();
-    `;
-
+    // // Create trigger to call function after update
+    // const triggerUpdateStockHistory = await client.sql`
+    //   CREATE TRIGGER update_stock_history_trigger
+    //   AFTER UPDATE ON products
+    //   FOR EACH ROW
+    //   WHEN (OLD.stock IS DISTINCT FROM NEW.stock)
+    //   EXECUTE FUNCTION update_stock_history();
+    // `;
 
     // Insert data into the "products" table
     const insertedProducts = await Promise.all(
@@ -154,9 +153,9 @@ async function seedProducts(client) {
     return {
       createTable,
       createTriggerFunction,
-      createUpdateStockHistory,
+      // createUpdateStockHistory,
       createTrigger,
-      triggerUpdateStockHistory,
+      // triggerUpdateStockHistory,
       products: insertedProducts,
     };
   } catch (error) {
@@ -183,7 +182,7 @@ async function seedStockHistory(client) {
     console.log(`Created "stock_history" table`);
 
     return {
-      createTable
+      createTable,
     };
   } catch (error) {
     console.error('Error seeding stock history:', error);
@@ -345,20 +344,22 @@ async function seedOrders(client) {
     const createUpdateRevenue = await client.sql`
     CREATE OR REPLACE FUNCTION update_revenue() RETURNS TRIGGER AS $$
     BEGIN
-      INSERT INTO revenue (month, revenue)
-      SELECT
-        DATE_TRUNC('month', NEW.date) AS month,
-        COALESCE(SUM(amount), 0) AS revenue
+      IF NEW.status = 'paid' THEN
+        INSERT INTO revenue (month, revenue)
+        SELECT
+          DATE_TRUNC('month', NEW.date) AS month,
+          COALESCE(SUM(amount), 0) AS revenue
         FROM orders
         WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', NEW.date)
-        on CONFLICT (month) DO UPDATE SET revenue = EXCLUDED.revenue;
-        RETURN NEW;
+        ON CONFLICT (month) DO UPDATE SET revenue = EXCLUDED.revenue;
+      END IF;
+      RETURN NEW;
     END;
     $$ LANGUAGE plpgsql;
   `;
 
-  // Create trigger to call function after an order is inserted/updated
-  const triggerUpdateRevenue = await client.sql`
+    // Create trigger to call function after an order is inserted/updated
+    const triggerUpdateRevenue = await client.sql`
     CREATE TRIGGER update_revenue_trigger
     AFTER INSERT OR UPDATE ON orders
     FOR EACH ROW

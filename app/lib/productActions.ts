@@ -46,7 +46,11 @@ const FormSchema = z.object({
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   stock: z.coerce.number().gt(-1, { message: 'Please enter a valid amount.' }),
-  expiry: z.coerce.date().refine((data) => data > new Date(), { message: "Expiry date must be in the future" }),
+  expiry: z.coerce
+    .date()
+    .refine((data) => data > new Date(), {
+      message: 'Expiry date must be in the future',
+    }),
 });
 
 const CreateProduct = FormSchema.omit({ id: true });

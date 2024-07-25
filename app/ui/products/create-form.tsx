@@ -178,7 +178,9 @@ export default function Form() {
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
                   Meat & Seafood <TbMeat size={15} />
-                  {selected == 'meatAndSeafood' && <CheckIcon className="h-4 w-4" />}
+                  {selected == 'meatAndSeafood' && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
                 </label>
               </div>
               <div className="flex items-center">
@@ -196,7 +198,9 @@ export default function Form() {
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
                   Bakery & Desserts <MdOutlineBakeryDining size={15} />
-                  {selected == 'bakeryAndDesserts' && <CheckIcon className="h-4 w-4" />}
+                  {selected == 'bakeryAndDesserts' && (
+                    <CheckIcon className="h-4 w-4" />
+                  )}
                 </label>
               </div>
               <div className="flex items-center">

@@ -34,7 +34,7 @@ export const { auth, signIn, signOut } = NextAuth({
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordsMatch) return user;
+          if (passwordsMatch && user.role == 'admin') return user;
         }
 
         console.log('Invalid credentials');

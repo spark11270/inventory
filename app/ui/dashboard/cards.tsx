@@ -59,7 +59,15 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'orders' | 'products' | 'customers' | 'pending' | 'collected' | 'revenue' | 'inStock' | 'outOfStock';
+  type:
+    | 'orders'
+    | 'products'
+    | 'customers'
+    | 'pending'
+    | 'collected'
+    | 'revenue'
+    | 'inStock'
+    | 'outOfStock';
 }) {
   const Icon = iconMap[type];
 

@@ -6,7 +6,11 @@ export default function Logo() {
     <div
       className={`${lusitana.className} flex flex-row items-center leading-none text-white`}
     >
-      <ShoppingCartIcon className="h-12 w-12 rotate-[15deg]" width={40} height={40}/>
+      <ShoppingCartIcon
+        className="h-12 w-12 rotate-[15deg]"
+        width={40}
+        height={40}
+      />
     </div>
   );
 }
