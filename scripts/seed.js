@@ -344,6 +344,7 @@ async function seedOrders(client) {
           SET stock = stock + OLD.quantity - NEW.quantity
           WHERE id = NEW.product_id;
         END IF;
+        RETURN NULL;
       END;
       $$ LANGUAGE plpgsql;
     `;

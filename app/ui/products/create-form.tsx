@@ -325,7 +325,7 @@ export default function Form() {
 
         {/* Price */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="price" className="mb-2 block text-sm font-medium">
             Set price
           </label>
           <div className="relative mt-2 rounded-md">
@@ -354,7 +354,7 @@ export default function Form() {
 
         {/* Product Stock */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="stock" className="mb-2 block text-sm font-medium">
             Set stock
           </label>
           <div className="relative mt-2 rounded-md">
@@ -383,14 +383,14 @@ export default function Form() {
 
         {/* Product Expiry */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label htmlFor="expiry" className="mb-2 block text-sm font-medium">
             Set expiry date
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="price"
-                name="price"
+                id="expiry"
+                name="expiry"
                 type="string"
                 placeholder="Enter expiry date (YYYY-MM-DD)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"

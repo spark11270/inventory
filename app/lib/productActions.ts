@@ -62,8 +62,11 @@ export async function createProduct(prevState: State, formData: FormData) {
     expiry: formData.get('expiry'),
   });
 
+  console.log(validatedFields)
+
   // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
+    console.log(validatedFields.error.flatten().fieldErrors)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Product.',
@@ -73,7 +76,6 @@ export async function createProduct(prevState: State, formData: FormData) {
   // Prepare data for insertion into the database
   const { name, category, price, stock, expiry } = validatedFields.data;
   const id = uuidv4();
-  // const expiry = expiry?.toDateString();
 
   // Insert data into the database
   try {
@@ -124,7 +126,7 @@ export async function createProduct(prevState: State, formData: FormData) {
             VALUES (${id}, ${name}, ${category}, ${stock}, ${price}, ${expiry})
             `;
         await sql`
-            INSERT INTO pmeatAndSeafood (id, name, stock, price, expiry)
+            INSERT INTO meatAndSeafood (id, name, stock, price, expiry)
             VALUES (${id}, ${name}, ${stock}, ${price}, ${expiry})
             `;
         break;
@@ -243,7 +245,6 @@ export async function updateProduct(
   }
 
   const { name, category, price, stock, expiry } = validatedFields.data;
-  // const expiry = expiry?.toDateString();
 
   try {
     switch (category) {
