@@ -370,11 +370,12 @@ async function seedOrders(client) {
         WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', NEW.date)
         ON CONFLICT (month) DO UPDATE SET revenue = EXCLUDED.revenue;
       END IF;
-      RETURN NEW;
+      RETURN NEW; 
     END;
     $$ LANGUAGE plpgsql;
   `;
 
+  
     // Create trigger to call function after an order is inserted/updated
     const triggerUpdateRevenue = await client.sql`
     CREATE TRIGGER update_revenue_trigger
