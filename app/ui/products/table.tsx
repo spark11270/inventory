@@ -27,8 +27,6 @@ export default async function ProductsTable({
   const products = await fetchFilteredProducts(query, currentPage);
   const session = await auth();
 
-  console.log(products[4].expiry)
-
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

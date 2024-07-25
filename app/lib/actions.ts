@@ -64,9 +64,10 @@ export async function createOrder(prevState: State, formData: FormData) {
         VALUES (${customerId}, ${productId}, ${quantity}, ${status})
         `;
   } catch (error) {
+    console.log(error)
     // If a database error occurs, return a more specific error.
     return {
-      message: 'Database Error: Failed to Create Order.',
+      message: error + '. Failed to Update Order.',
     };
   }
 
@@ -104,7 +105,7 @@ export async function updateOrder(
         `;
   } catch (error) {
     console.log(error);
-    return { message: error + ' Failed to Update Order.' };
+    return { message: error + '. Failed to Update Order.' };
   }
 
   revalidatePath('/dashboard/orders');
@@ -117,6 +118,7 @@ export async function deleteOrder(id: string) {
     revalidatePath('/dashboard/orders');
     return { message: 'Deleted Order.' };
   } catch (error) {
+    console.log(error)
     return { message: 'Database Error: Failed to Delete Order.' };
   }
 }
