@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { authConfig } from './auth.config';
 import { z } from 'zod';
@@ -14,6 +14,21 @@ async function getUser(email: string): Promise<User | undefined> {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+declare module 'next-auth' {
+  interface User {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role: 'admin' | 'user' | unknown;
+  }
+  interface Session {
+    user: {
+      role: 'admin' | 'user';
+    } & DefaultSession['user'];
   }
 }
 
@@ -34,7 +49,12 @@ export const { auth, signIn, signOut } = NextAuth({
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordsMatch && user.role == 'admin') return user;
+          if (passwordsMatch)
+            return {
+              id: user.id,
+              email: user.email,
+              role: user.role,
+            };
         }
 
         console.log('Invalid credentials');

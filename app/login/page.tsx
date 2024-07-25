@@ -1,4 +1,4 @@
-import Logo from '@/app/ui/acme-logo';
+import Logo from '@/app/ui/logo';
 import LoginForm from '@/app/ui/login-form';
 
 export default function LoginPage() {

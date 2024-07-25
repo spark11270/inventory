@@ -7,6 +7,7 @@ import { OrdersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchOrdersPages } from '@/app/lib/data';
 import { Metadata } from 'next';
+import { auth } from '@/auth';
 
 export const metadata: Metadata = {
   title: 'Orders',
@@ -23,6 +24,7 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchOrdersPages(query);
+  const session = await auth();
 
   return (
     <div className="w-full">
@@ -31,7 +33,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search orders..." />
-        <CreateOrder />
+        <CreateOrder user={session?.user.role === 'user'} />
       </div>
       <Suspense key={query + currentPage} fallback={<OrdersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

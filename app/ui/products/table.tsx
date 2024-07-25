@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { UpdateProduct, DeleteProduct } from '@/app/ui/products/buttons';
 import ProductStatus from '@/app/ui/products/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
@@ -16,6 +15,7 @@ import { PiHouseLineBold } from 'react-icons/pi';
 import { CiBacon } from 'react-icons/ci';
 import { MdOutlineBakeryDining, MdOutlineCleanHands } from 'react-icons/md';
 import { GiHotMeal } from 'react-icons/gi';
+import { auth } from '@/auth';
 
 export default async function ProductsTable({
   query,
@@ -25,6 +25,7 @@ export default async function ProductsTable({
   currentPage: number;
 }) {
   const products = await fetchFilteredProducts(query, currentPage);
+  const session = await auth();
 
   return (
     <div className="mt-6 flow-root">
@@ -126,8 +127,14 @@ export default async function ProductsTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateProduct id={product.id} />
-                      <DeleteProduct id={product.id} />
+                      <UpdateProduct
+                        id={product.id}
+                        user={session?.user.role === 'user'}
+                      />
+                      <DeleteProduct
+                        id={product.id}
+                        user={session?.user.role === 'user'}
+                      />
                     </div>
                   </td>
                 </tr>

@@ -1,9 +1,5 @@
 const { db } = require('@vercel/postgres');
-const {
-  orders,
-  customers,
-  users,
-} = require('../app/lib/placeholder-data.js');
+const { orders, customers, users } = require('../app/lib/placeholder-data.js');
 const {
   products,
   snacks,

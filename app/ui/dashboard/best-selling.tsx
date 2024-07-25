@@ -38,7 +38,7 @@ export default async function BestSellingProducts() {
                   },
                 )}
               >
-                 <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                   {product.category == 'snacks' && (
                     <LuPopcorn className="my-1 mr-1" size={22} />
                   )}
@@ -78,7 +78,7 @@ export default async function BestSellingProducts() {
                   {product.category == 'household' && (
                     <PiHouseLineBold className="my-1 mr-1" size={22} />
                   )}
-                  <div className="min-w-0 text-ellipsis overflow-hidden">
+                  <div className="min-w-0 overflow-hidden text-ellipsis">
                     <p className="truncate text-sm font-semibold md:text-base">
                       {product.name}
                     </p>

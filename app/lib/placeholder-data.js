@@ -19,13 +19,13 @@ const users = [
     name: 'Admin',
     email: 'admin@email.com',
     password: 'password',
-    role: 'admin'
+    role: 'admin',
   },
   {
     name: 'User',
     email: 'user@email.com',
     password: 'password',
-    role: 'user'
+    role: 'user',
   },
 ];
 
@@ -224,5 +224,5 @@ const orders = [
 module.exports = {
   users,
   customers,
-  orders
+  orders,
 };

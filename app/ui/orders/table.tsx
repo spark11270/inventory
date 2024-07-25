@@ -3,6 +3,7 @@ import { UpdateOrder, DeleteOrder } from '@/app/ui/orders/buttons';
 import OrderStatus from '@/app/ui/orders/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredOrders } from '@/app/lib/data';
+import { auth } from '@/auth';
 
 export default async function OrdersTable({
   query,
@@ -12,49 +13,12 @@ export default async function OrdersTable({
   currentPage: number;
 }) {
   const orders = await fetchFilteredOrders(query, currentPage);
+  const session = await auth();
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
-          <div className="md:hidden">
-            {orders?.map((order) => (
-              <div
-                key={order.id}
-                className="mb-2 w-full rounded-md bg-white p-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
-                    <div className="mb-2 flex items-center">
-                      <Image
-                        src={order.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${order.customer_name}'s profile picture`}
-                      />
-                      <p>{order.customer_name}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">{order.product_id}</p>
-                    <p>{order.quantity}</p>
-                  </div>
-                  <OrderStatus status={order.status} />
-                </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p className="text-xl font-medium">
-                      {formatCurrency(order.amount)}
-                    </p>
-                    <p>{formatDateToLocal(order.date)}</p>
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <UpdateOrder id={order.id} />
-                    <DeleteOrder id={order.id} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
@@ -116,8 +80,14 @@ export default async function OrdersTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateOrder id={order.id} />
-                      <DeleteOrder id={order.id} />
+                      <UpdateOrder
+                        id={order.id}
+                        user={session?.user.role === 'user'}
+                      />
+                      <DeleteOrder
+                        id={order.id}
+                        user={session?.user.role === 'user'}
+                      />
                     </div>
                   </td>
                 </tr>
