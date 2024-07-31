@@ -196,7 +196,7 @@ export async function createProduct(prevState: State, formData: FormData) {
             VALUES (${id}, ${name}, ${category}, ${stock}, ${price})
             `;
         await sql`
-            INSERT INTO floral (id, name, stock, price)
+            INSERT INTO floral(id, name, stock, price)
             VALUES (${id}, ${name}, ${stock}, ${price})
             `;
         break;
@@ -406,6 +406,7 @@ export async function updateProduct(
         break;
     }
   } catch (error) {
+    console.log(error)
     return { message: 'Database Error: Failed to Update Product.' };
   }
 

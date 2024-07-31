@@ -243,7 +243,7 @@ export async function fetchProducts() {
     const products = await sql<ProductField>`
       SELECT id, name, category 
       FROM products
-      ORDER BY products.name DESC
+      ORDER BY products.stock DESC
       `;
 
     return products.rows;
@@ -272,7 +272,7 @@ export async function fetchFilteredProducts(
         products.expiry::text ILIKE ${`%${query}%`} OR
         products.price::text ILIKE ${`%${query}%`} OR
         products.status ILIKE ${`%${query}%`}
-      ORDER BY products.name DESC
+      ORDER BY products.stock DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
