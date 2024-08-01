@@ -1,0 +1,277 @@
+DROP SCHEMA
+CREATE SCHEMA
+CREATE EXTENSION
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+ table_name 
+------------
+ users
+ products
+ snack
+ pantry
+ beverage
+ revenue
+ customers
+ orders
+(8 rows)
+
+INSERT 0 2
+                  id                  |     name      |         email         |   password   | role  
+--------------------------------------+---------------+-----------------------+--------------+-------
+ 1e011ff0-9426-42fe-88ab-b1f8ac0c2ea4 | Jeremy Smith  | jeremySmith@gmail.com | jeremysmith  | admin
+ 6abf6781-121a-46f0-a6c0-7789cfc84dfc | Nancy Tuckett | nancy123@gmail.com    | nancytuckett | user
+(2 rows)
+
+INSERT 0 3
+                  id                  |       name        |       email        |            image_url             
+--------------------------------------+-------------------+--------------------+----------------------------------
+ 8740c842-16af-4f9f-a19e-f3b8c8c11eef | Delba de Oliveria | delba@oliveira.com | /customers/delba-de-oliveira.png
+ 6ee9e3d2-59df-4663-aa15-ff9631ca4fcb | Lee Robinson      | lee@robinson.com   | /customers/lee-robinson.png
+ 6e2c99aa-5d20-4471-8cab-1f00c8ade6ac | Hector Simpson    | hector@simpson.com | /customers/hector-simpson.png
+(3 rows)
+
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE TRIGGER
+CREATE TRIGGER
+CREATE TRIGGER
+INSERT 0 4
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+                  id                  |                             name                              | category | price  | stock |   expiry   |  status  
+--------------------------------------+---------------------------------------------------------------+----------+--------+-------+------------+----------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | snack Signature Super Extra-Large Peanuts, 2.5 lbs            | Snack    |   8.00 |   186 | 2024-07-18 | in-stock
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | European Black Winter Fresh Truffles 3 oz.                    | Pantry   | 189.00 |   420 | 2025-03-12 | in-stock
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | Pulp & Press Organic Cold-Pressed Wellness Shot Pack, 48-pack | Beverage |  99.00 |   935 | 2024-08-07 | in-stock
+ 14896a3c-6062-4f5a-9edb-659b87d5ba33 | Prime Hydration Drink, Variety Pack, 16.9 fl oz, 15-count     | Beverage |  21.99 |   187 | 2024-07-31 | in-stock
+(4 rows)
+
+                  id                  |                        name                        | price | stock |   expiry   |  status  
+--------------------------------------+----------------------------------------------------+-------+-------+------------+----------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | snack Signature Super Extra-Large Peanuts, 2.5 lbs |  8.00 |   186 | 2024-07-18 | in-stock
+(1 row)
+
+                  id                  |                    name                    | price  | stock |   expiry   |  status  
+--------------------------------------+--------------------------------------------+--------+-------+------------+----------
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | European Black Winter Fresh Truffles 3 oz. | 189.00 |   420 | 2025-03-12 | in-stock
+(1 row)
+
+                  id                  |                             name                              | price | stock |   expiry   |  status  
+--------------------------------------+---------------------------------------------------------------+-------+-------+------------+----------
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | Pulp & Press Organic Cold-Pressed Wellness Shot Pack, 48-pack | 99.00 |   935 | 2024-08-07 | in-stock
+ 14896a3c-6062-4f5a-9edb-659b87d5ba33 | Prime Hydration Drink, Variety Pack, 16.9 fl oz, 15-count     | 21.99 |   187 | 2024-07-31 | in-stock
+(2 rows)
+
+UPDATE 1
+UPDATE 1
+UPDATE 1
+UPDATE 1
+UPDATE 1
+UPDATE 1
+                  id                  |                           name                            | category | price | stock |   expiry   |  status  
+--------------------------------------+-----------------------------------------------------------+----------+-------+-------+------------+----------
+ 14896a3c-6062-4f5a-9edb-659b87d5ba33 | Prime Hydration Drink, Variety Pack, 16.9 fl oz, 15-count | Beverage | 21.99 |   187 | 2024-07-31 | in-stock
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name                                            | Snack    |  1.00 |  1000 | 2024-07-15 | in-stock
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | New Pantry Name                                           | Pantry   |  1.00 |   420 | 2024-07-15 | in-stock
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name                                         | Beverage |  1.00 |   186 | 2024-07-15 | in-stock
+(4 rows)
+
+                  id                  |      name      | price | stock |   expiry   |  status  
+--------------------------------------+----------------+-------+-------+------------+----------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name |  1.00 |  1000 | 2024-07-15 | in-stock
+(1 row)
+
+                  id                  |      name       | price | stock |   expiry   |  status  
+--------------------------------------+-----------------+-------+-------+------------+----------
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | New Pantry Name |  1.00 |   420 | 2024-07-15 | in-stock
+(1 row)
+
+                  id                  |                           name                            | price | stock |   expiry   |  status  
+--------------------------------------+-----------------------------------------------------------+-------+-------+------------+----------
+ 14896a3c-6062-4f5a-9edb-659b87d5ba33 | Prime Hydration Drink, Variety Pack, 16.9 fl oz, 15-count | 21.99 |   187 | 2024-07-31 | in-stock
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name                                         |  1.00 |   186 | 2024-07-15 | in-stock
+(2 rows)
+
+DELETE 1
+                  id                  |       name        | category | price | stock |   expiry   |  status  
+--------------------------------------+-------------------+----------+-------+-------+------------+----------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name    | Snack    |  1.00 |  1000 | 2024-07-15 | in-stock
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | New Pantry Name   | Pantry   |  1.00 |   420 | 2024-07-15 | in-stock
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name | Beverage |  1.00 |   186 | 2024-07-15 | in-stock
+(3 rows)
+
+                  id                  |       name        | price | stock |   expiry   |  status  
+--------------------------------------+-------------------+-------+-------+------------+----------
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name |  1.00 |   186 | 2024-07-15 | in-stock
+(1 row)
+
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+INSERT 0 3
+                  id                  |              customerid              |              productid               | quantity | amount |    date    | status  
+--------------------------------------+--------------------------------------+--------------------------------------+----------+--------+------------+---------
+ 92bf3c9b-6dac-483e-ae6d-64ad8dc10623 | 8740c842-16af-4f9f-a19e-f3b8c8c11eef | 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 |       34 |  34.00 | 2024-07-31 | paid
+ d9684896-6006-48b2-8269-b1616e2a3f22 | 6ee9e3d2-59df-4663-aa15-ff9631ca4fcb | 3f349a7c-4812-4f14-8073-79fb3bad21fc |      420 | 420.00 | 2024-07-31 | pending
+ 78709a40-3c63-421e-833b-f0c5a6c49551 | 6e2c99aa-5d20-4471-8cab-1f00c8ade6ac | f929dca3-6f56-48f0-914b-6f35c39bd7a3 |      122 | 122.00 | 2024-07-31 | paid
+(3 rows)
+
+                  id                  |       name        | category | price | stock |   expiry   |    status    
+--------------------------------------+-------------------+----------+-------+-------+------------+--------------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name    | Snack    |  1.00 |   966 | 2024-07-15 | in-stock
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | New Pantry Name   | Pantry   |  1.00 |     0 | 2024-07-15 | out-of-stock
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name | Beverage |  1.00 |    64 | 2024-07-15 | in-stock
+(3 rows)
+
+   month    | revenue 
+------------+---------
+ 2024-07-01 |     156
+(1 row)
+
+UPDATE 1
+UPDATE 1
+UPDATE 1
+                  id                  |              customerid              |              productid               | quantity | amount |    date    | status  
+--------------------------------------+--------------------------------------+--------------------------------------+----------+--------+------------+---------
+ 92bf3c9b-6dac-483e-ae6d-64ad8dc10623 | 8740c842-16af-4f9f-a19e-f3b8c8c11eef | 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 |       40 |  40.00 | 2024-07-31 | paid
+ d9684896-6006-48b2-8269-b1616e2a3f22 | 8740c842-16af-4f9f-a19e-f3b8c8c11eef | 3f349a7c-4812-4f14-8073-79fb3bad21fc |      420 | 420.00 | 2024-07-31 | paid
+ 78709a40-3c63-421e-833b-f0c5a6c49551 | 6e2c99aa-5d20-4471-8cab-1f00c8ade6ac | 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 |      695 | 695.00 | 2024-07-31 | pending
+(3 rows)
+
+                  id                  |       name        | category | price | stock |   expiry   |    status    
+--------------------------------------+-------------------+----------+-------+-------+------------+--------------
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | New Pantry Name   | Pantry   |  1.00 |     0 | 2024-07-15 | out-of-stock
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name | Beverage |  1.00 |   186 | 2024-07-15 | in-stock
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name    | Snack    |  1.00 |   265 | 2024-07-15 | in-stock
+(3 rows)
+
+   month    | revenue 
+------------+---------
+ 2024-07-01 |     914
+(1 row)
+
+DELETE 1
+                  id                  |              customerid              |              productid               | quantity | amount |    date    | status  
+--------------------------------------+--------------------------------------+--------------------------------------+----------+--------+------------+---------
+ 92bf3c9b-6dac-483e-ae6d-64ad8dc10623 | 8740c842-16af-4f9f-a19e-f3b8c8c11eef | 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 |       40 |  40.00 | 2024-07-31 | paid
+ 78709a40-3c63-421e-833b-f0c5a6c49551 | 6e2c99aa-5d20-4471-8cab-1f00c8ade6ac | 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 |      695 | 695.00 | 2024-07-31 | pending
+(2 rows)
+
+                  id                  |       name        | category | price | stock |   expiry   |  status  
+--------------------------------------+-------------------+----------+-------+-------+------------+----------
+ f929dca3-6f56-48f0-914b-6f35c39bd7a3 | New Beverage Name | Beverage |  1.00 |   186 | 2024-07-15 | in-stock
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name    | Snack    |  1.00 |   265 | 2024-07-15 | in-stock
+ 3f349a7c-4812-4f14-8073-79fb3bad21fc | New Pantry Name   | Pantry   |  1.00 |   420 | 2024-07-15 | in-stock
+(3 rows)
+
+   month    | revenue 
+------------+---------
+ 2024-07-01 |     494
+(1 row)
+
+                  id                  |      name      | category | price | stock |   expiry   |  status  
+--------------------------------------+----------------+----------+-------+-------+------------+----------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name | Snack    |  1.00 |   265 | 2024-07-15 | in-stock
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
+
+                  id                  |      name      | category | totalrevenue | totalsold 
+--------------------------------------+----------------+----------+--------------+-----------
+ 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | New Snack Name | Snack    |        40.00 |        40
+(1 row)
+
+                  id                  | quantity | amount |    date    | status  |              productid               |  customername  |           image_url           |  productname   
+--------------------------------------+----------+--------+------------+---------+--------------------------------------+----------------+-------------------------------+----------------
+ 78709a40-3c63-421e-833b-f0c5a6c49551 |      695 | 695.00 | 2024-07-31 | pending | 8f5896ca-f5a5-4724-bb55-f1251aaf6e86 | Hector Simpson | /customers/hector-simpson.png | New Snack Name
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
+
+                  id                  |     name     |      email       |          image_url          | totalorders | totalpending | totalpaid 
+--------------------------------------+--------------+------------------+-----------------------------+-------------+--------------+-----------
+ 6ee9e3d2-59df-4663-aa15-ff9631ca4fcb | Lee Robinson | lee@robinson.com | /customers/lee-robinson.png |           0 |            0 |         0
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
+
+ count 
+-------
+     3
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
+
+ count 
+-------
+     3
+(1 row)
+
+ count 
+-------
+     0
+(1 row)
+
+ count 
+-------
+     3
+(1 row)
+
+ count 
+-------
+     2
+(1 row)
+
+ sum 
+-----
+ 494
+(1 row)
+
+ paid  | pending 
+-------+---------
+ 40.00 |  695.00
+(1 row)
+

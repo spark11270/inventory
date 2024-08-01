@@ -208,7 +208,6 @@ async function seedCustomers(client) {
         (customer) => client.sql`
         INSERT INTO customers (id, name, email, image_url)
         VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
-        ON CONFLICT (id) DO NOTHING;
       `,
       ),
     );
@@ -358,30 +357,96 @@ async function seedOrders(client) {
     `;
 
     // Create trigger function to update revenue
-    const createUpdateRevenue = await client.sql`
-    CREATE OR REPLACE FUNCTION update_revenue() RETURNS TRIGGER AS $$
+    const createUpdateRevenueInsert = await client.sql`
+    CREATE OR REPLACE FUNCTION update_revenue_insert()
+    RETURNS TRIGGER AS $$
     BEGIN
-      IF NEW.status = 'paid' THEN
-        INSERT INTO revenue (month, revenue)
-        SELECT
-          DATE_TRUNC('month', NEW.date) AS month,
-          COALESCE(SUM(amount), 0) AS revenue
-        FROM orders
-        WHERE DATE_TRUNC('month', date) = DATE_TRUNC('month', NEW.date)
-        ON CONFLICT (month) DO UPDATE SET revenue = EXCLUDED.revenue;
-      END IF;
-      RETURN NEW; 
+        IF NEW.status = 'paid' THEN
+            DECLARE
+                OMonth DATE := DATE_TRUNC('month', NEW.date);
+            BEGIN
+                INSERT INTO revenue (month, revenue)
+                VALUES (OMonth, NEW.amount)
+                ON CONFLICT (month)
+                DO UPDATE SET revenue = revenue.revenue + EXCLUDED.revenue;
+            END;
+        END IF;
+        RETURN NEW;
     END;
     $$ LANGUAGE plpgsql;
   `;
 
   
-    // Create trigger to call function after an order is inserted/updated
-    const triggerUpdateRevenue = await client.sql`
-    CREATE TRIGGER update_revenue_trigger
-    AFTER INSERT OR UPDATE ON orders
+    // Create trigger to call function after an order is inserted
+    const triggerUpdateRevenueInsert = await client.sql`
+    CREATE TRIGGER update_revenue_insert_trigger
+    AFTER INSERT ON orders
     FOR EACH ROW
-    EXECUTE FUNCTION update_revenue();
+    EXECUTE FUNCTION update_revenue_insert();
+  `;
+
+  // Create trigger function to update revenue
+  const createUpdateRevenueDelete = await client.sql`
+  CREATE OR REPLACE FUNCTION update_revenue_delete()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      IF OLD.status = 'paid' THEN
+          DECLARE
+              OMonth DATE := DATE_TRUNC('month', OLD.date);
+          BEGIN
+              UPDATE revenue
+              SET revenue = revenue.revenue - OLD.amount
+              WHERE month = OMonth;
+              DELETE FROM revenue
+              WHERE revenue = 0 AND month = OMonth;
+          END;
+      END IF;
+      RETURN OLD;
+  END;
+  $$ LANGUAGE plpgsql;
+  `;
+
+  
+    // Create trigger to call function after an order is deleted
+    const triggerUpdateRevenueDelete = await client.sql`
+    CREATE TRIGGER update_revenue_delete_trigger
+    AFTER DELETE ON orders
+    FOR EACH ROW
+    EXECUTE FUNCTION update_revenue_delete();
+  `;
+
+  // Create trigger function to update revenue
+  const createUpdateRevenueUpdate = await client.sql`
+  CREATE OR REPLACE FUNCTION update_revenue_update()
+  RETURNS TRIGGER AS $$
+  DECLARE
+      OMonth DATE := DATE_TRUNC('month', NEW.date);
+  BEGIN
+      IF OLD.status = 'paid' AND NEW.status = 'pending' THEN
+          UPDATE revenue
+          SET revenue = revenue.revenue - OLD.amount
+          WHERE month = OMonth;
+          DELETE FROM revenue
+          WHERE revenue = 0 AND month = OMonth;
+      END IF;
+      IF NEW.status = 'paid' AND OLD.status = 'pending' THEN
+          INSERT INTO revenue (month, revenue)
+          VALUES (OMonth, NEW.amount)
+          ON CONFLICT (month)
+          DO UPDATE SET revenue = revenue.revenue + EXCLUDED.revenue;
+      END IF;
+      RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+  `;
+
+  
+    // Create trigger to call function after an order is updated
+    const triggerUpdateRevenueUpdate = await client.sql`
+    CREATE TRIGGER update_revenue_update_trigger
+    AFTER UPDATE ON orders
+    FOR EACH ROW
+    EXECUTE FUNCTION update_revenue_update();
   `;
 
     // Insert data into the "orders" table
@@ -404,12 +469,16 @@ async function seedOrders(client) {
       createReduceStock,
       createRevertStock,
       createUpdateStock,
-      createUpdateRevenue,
+      createUpdateRevenueInsert,
+      createUpdateRevenueDelete,
+      createUpdateRevenueUpdate,
       triggerUpdateAmount,
       triggerReduceStock,
       triggerRevertStock,
       triggerUpdateStock,
-      triggerUpdateRevenue,
+      triggerUpdateRevenueInsert,
+      triggerUpdateRevenueDelete,
+      triggerUpdateRevenueUpdate,
       orders: insertedOrders,
     };
   } catch (error) {
@@ -424,7 +493,7 @@ async function seedRevenue(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS revenue (
         month DATE NOT NULL UNIQUE,
-        revenue INT NOT NULL
+        revenue INT NOT NULL 
       );
     `;
 
