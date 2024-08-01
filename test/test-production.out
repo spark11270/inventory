@@ -1,0 +1,221 @@
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+CREATE TABLE
+CREATE FUNCTION
+CREATE TRIGGER
+ALTER TABLE
+INSERT 0 33
+INSERT 0 65
+INSERT 0 21
+INSERT 0 67
+INSERT 0 69
+INSERT 0 65
+INSERT 0 71
+INSERT 0 21
+INSERT 0 70
+INSERT 0 52
+INSERT 0 33
+INSERT 0 64
+INSERT 0 47
+INSERT 0 67
+INSERT 0 33
+INSERT 0 65
+INSERT 0 21
+INSERT 0 67
+INSERT 0 69
+INSERT 0 65
+INSERT 0 71
+INSERT 0 21
+INSERT 0 70
+INSERT 0 52
+INSERT 0 33
+INSERT 0 64
+INSERT 0 67
+INSERT 0 2
+INSERT 0 10
+INSERT 0 4
+ count 
+-------
+   745
+(1 row)
+
+  id   |                                   name                                   |     category      | price | stock |   expiry   |  status  
+-------+--------------------------------------------------------------------------+-------------------+-------+-------+------------+----------
+  2003 | Kirkland Signature Whole Grain Rolled Oats, 10 LBS                       | Breakfast         |  9.99 |    87 | 2023-06-28 | in-stock
+  6000 | Kirkland Signature Coffee Organic Pacific Bold K-Cup Pod, 120-count      | Coffee            | 31.99 |    87 | 2023-07-22 | in-stock
+  5048 | Kirkland Signature Antibacterial Liquid Dish Soap, Green Apple, 90 fl oz | Cleaning Supplies |  9.49 |    86 | 2023-11-18 | in-stock
+  6046 | Kirkland Signature 100% Colombian Coffee, Dark Roast, 1.75 oz, 42-count  | Coffee            | 28.99 |    86 | 2023-08-06 | in-stock
+ 13047 | Kirkland Signature Fancy Whole Cashews, 2.5 lbs                          | Snacks            | 14.99 |    86 | 2023-04-30 | in-stock
+(5 rows)
+
+ id |     name     |      email       |          image_url          | total_orders | total_pending | total_paid 
+----+--------------+------------------+-----------------------------+--------------+---------------+------------
+  2 | Lee Robinson | lee@robinson.com | /customers/lee-robinson.png |            1 |       8929.53 |          0
+(1 row)
+
+ id | quantity | amount  |    date    | status  | product_id | customer_name |          image_url          |                product_name                
+----+----------+---------+------------+---------+------------+---------------+-----------------------------+--------------------------------------------
+  2 |       47 | 8929.53 | 2023-12-14 | pending |      11000 | Lee Robinson  | /customers/lee-robinson.png | European Black Winter Fresh Truffles 3 oz.
+(1 row)
+
+  id  |                          name                          |     category      | price | stock |   expiry   |  status  
+------+--------------------------------------------------------+-------------------+-------+-------+------------+----------
+ 1005 | Poppi Prebiotic Soda, Variety Pack, 12 fl oz, 15-count | Beverages & Water | 19.99 |    67 | 2023-08-18 | in-stock
+(1 row)
+
+UPDATE 1
+  id  | name |     category      | price | stock |   expiry   |  status  
+------+------+-------------------+-------+-------+------------+----------
+ 1005 | Test | Beverages & Water | 99.99 |    50 | 2023-08-18 | in-stock
+(1 row)
+
+DELETE 1
+ id | name | category | price | stock | expiry | status 
+----+------+----------+-------+-------+--------+--------
+(0 rows)
+
+ id | customer_id | product_id | quantity | amount | date | status 
+----+-------------+------------+----------+--------+------+--------
+(0 rows)
+
+INSERT 0 1
+ id | customer_id | product_id | quantity | amount |    date    | status  
+----+-------------+------------+----------+--------+------------+---------
+  5 |           6 |       2000 |        8 |  83.92 | 2024-05-05 | pending
+(1 row)
+
+UPDATE 1
+ id | customer_id | product_id | quantity | amount |    date    | status 
+----+-------------+------------+----------+--------+------------+--------
+  5 |           6 |       2000 |        8 |  83.92 | 2024-05-05 | paid
+(1 row)
+
+DELETE 1
+ id | customer_id | product_id | quantity | amount | date | status 
+----+-------------+------------+----------+--------+------+--------
+(0 rows)
+
+ stock 
+-------
+    32
+(1 row)
+
+INSERT 0 1
+ stock 
+-------
+    24
+(1 row)
+
+UPDATE 1
+ stock 
+-------
+    27
+(1 row)
+
+  id  |                             name                              |     category      | total_revenue | total_sold 
+------+---------------------------------------------------------------+-------------------+---------------+------------
+ 1000 | Pulp & Press Organic Cold-Pressed Wellness Shot Pack, 48-pack | Beverages & Water |       2199.78 |         22
+ 4000 | Kirkland Signature Almonds, Milk Chocolate, 3 lb              | Candy             |        458.73 |         27
+ 2000 | MadeGood Granola Minis, Variety Pack, 0.85 oz, 24-count       | Breakfast         |         52.45 |          5
+(3 rows)
+
+ count 
+-------
+     5
+(1 row)
+
+ count 
+-------
+    10
+(1 row)
+
+ count 
+-------
+   744
+(1 row)
+
+ total 
+-------
+  2711
+(1 row)
+
+  paid   | pending 
+---------+---------
+ 2710.96 | 9109.33
+(1 row)
+
+ count 
+-------
+   743
+(1 row)
+
+ count 
+-------
+     1
+(1 row)
